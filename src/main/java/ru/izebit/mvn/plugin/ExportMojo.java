@@ -1,4 +1,4 @@
-package com.fasten.infra;
+package ru.izebit.mvn.plugin;
 
 import com.orbitz.consul.Consul;
 import org.apache.commons.lang3.StringUtils;

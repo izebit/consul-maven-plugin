@@ -1,4 +1,4 @@
-package com.fasten.infra;
+package ru.izebit.mvn.plugin;
 
 import org.apache.maven.plugins.annotations.Parameter;
 

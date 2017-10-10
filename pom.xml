@@ -24,6 +24,7 @@
     </properties>
 
     <dependencies>
+        <!--dependencies for maven plugin-->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -41,10 +42,25 @@
             <version>2.0.6</version>
         </dependency>
 
+        <!--infra-->
         <dependency>
             <groupId>com.orbitz.consul</groupId>
             <artifactId>consul-client</artifactId>
             <version>0.16.3</version>
+        </dependency>
+
+        <!--it is for tests-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.pszymczyk.consul</groupId>
+            <artifactId>embedded-consul</artifactId>
+            <version>0.3.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
