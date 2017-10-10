@@ -7,7 +7,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 /**
- * @author <a href="a.konovalov@fasten.com">Artem Konovalov</a> <br/>
+ * @author <a href="izebit@gmail.com">Artem Konovalov</a> <br/>
  * Date: 10/10/2017/.
  */
 public class IntegrationTest {
