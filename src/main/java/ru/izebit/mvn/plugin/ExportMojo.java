@@ -11,6 +11,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -54,12 +55,16 @@ public class ExportMojo extends AbstractMojo {
         }
 
         Consul consul = builder.build();
-        ConsulExporter exporter = new ConsulExporter(consul.keyValueClient(), prefix);
+        ConsulExporter exporter = new ConsulExporter(consul.keyValueClient(), prefix, getLog());
 
         Path projectDirectory = Paths.get(project.getBasedir().toURI());
         for (File source : sources) {
             Path sourceFullPath = projectDirectory.resolve(Paths.get(source.toURI()));
             getLog().info("scanning " + sourceFullPath);
+            if (!Files.exists(sourceFullPath)) {
+                getLog().warn("the source does't exist: " + sourceFullPath);
+                continue;
+            }
             try {
                 Collection<PropertyFileHandler> handlers = PropertyFileHandler.getHandlers(sourceFullPath, exporter);
                 handlers.forEach(handler -> {

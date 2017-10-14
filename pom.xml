@@ -10,6 +10,7 @@
 
     <name>Consul Maven plugin</name>
     <description>Plugin for export properties from files to consul key-value store</description>
+    <inceptionYear>2017</inceptionYear>
 
     <contributors>
         <contributor>
@@ -47,6 +48,12 @@
             <groupId>com.orbitz.consul</groupId>
             <artifactId>consul-client</artifactId>
             <version>0.16.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--it is for tests-->
@@ -61,36 +68,135 @@
             <artifactId>embedded-consul</artifactId>
             <version>0.3.5</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.8</version>
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>run-its</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>gmaven-plugin</artifactId>
+                        <version>1.5</version>
+                        <configuration>
+                            <source>**/*.groovy</source>
+                            <debug>false</debug>
+                            <verbose>true</verbose>
+                            <stacktrace>true</stacktrace>
+                            <defaultScriptExtension>.groovy</defaultScriptExtension>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy</artifactId>
+                                <version>1.8.4</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.codehaus.gmaven.runtime</groupId>
+                                <artifactId>gmaven-runtime-1.8</artifactId>
+                                <version>1.4</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-invoker-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.gmaven.runtime</groupId>
+                                <artifactId>gmaven-runtime-1.8</artifactId>
+                                <version>1.4</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <addTestClassPath>true</addTestClassPath>
+                            <debug>true</debug>
+                            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <projectsDirectory>src/it</projectsDirectory>
+                            <showVersion>false</showVersion>
+                            <pomIncludes>
+                                <pomInclude>**/pom.xml</pomInclude>
+                            </pomIncludes>
+                            <preBuildHookScript>setup</preBuildHookScript>
+                            <postBuildHookScript>verify</postBuildHookScript>
+                            <settingsFile>src/it/settings.xml</settingsFile>
+                            <!-- Currently working with more than one thread does not work, cause
+                              it is not guaranteed that the setup-config project is build at first. see
+                              also http://jira.codehaus.org/browse/MINVOKER-147 -->
+                            <parallelThreads>1</parallelThreads>
+                            <filterProperties>
+                                <repository.proxy.url>${repository.proxy.url}</repository.proxy.url>
+                            </filterProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>pre-integration-tests</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>integration-tests</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>mrm-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <configuration>
+                            <propertyName>repository.proxy.url</propertyName>
+                            <repositories>
+                                <mockRepo>
+                                    <source>${project.build.directory}/local-repo</source>
+                                </mockRepo>
+                                <proxyRepo/>
+                            </repositories>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>start</goal>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.5</version>
-                <configuration>
-                    <goalPrefix>consul-maven-plugin</goalPrefix>
-                    <skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
-                    <goalPrefix>${artifactId}</goalPrefix>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>mojo-descriptor</id>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generated-helpmojo</id>
-                        <goals>
-                            <goal>helpmojo</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -107,8 +213,33 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <encoding>${project.build.sourceEncoding</encoding>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.5</version>
+                <configuration>
+                    <goalPrefix>consul-maven-plugin</goalPrefix>
+                    <skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
+                    <goalPrefix>${project.artifactId}</goalPrefix>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>mojo-descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generated-helpmojo</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
