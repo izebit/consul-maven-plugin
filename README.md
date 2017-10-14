@@ -1,12 +1,21 @@
-# consul-maven-plugin
+# Consul maven plugin
+[![Apache License, Version 2.0, January 2004][shield-license]][apache-license]
 
-maven plugin for export properties to consul
 
-# how to use it?
+#Overview
+Maven plugin for export properties to consul from files and directories 🎲
+
+
+## License
+[Apache License, Version 2.0, January 2004](http://www.apache.org/licenses/)
+
+## Usage
+
+### add dependency to pom.xml
 
 ```xml
 <plugin>
-    <groupId>com.fasten.infra</groupId>
+    <groupId>ru.izebit</groupId>
     <artifactId>consul-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <configuration>
@@ -22,7 +31,16 @@ maven plugin for export properties to consul
     </configuration>
 </plugin>
 ```
+### structure of file with properties
 
-# the goal for running
+```properties
+first-key = first-value
+#it is a comment
+second-key =
+third-key = #third value
+```
 
-> ru.izebit:consul-maven-plugin:export 
+### running goal
+```
+ru.izebit:consul-maven-plugin:export 
+```
