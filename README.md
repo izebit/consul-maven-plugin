@@ -11,7 +11,7 @@ Maven plugin for export properties to consul from files and directories 🎲
 
 ## Usage
 
-### add dependency to pom.xml
+### adding dependency to pom.xml
 
 ```xml
 <plugin>
@@ -31,7 +31,7 @@ Maven plugin for export properties to consul from files and directories 🎲
     </configuration>
 </plugin>
 ```
-### structure of file with properties
+### the structure of file with properties
 
 ```properties
 first-key = first-value
@@ -40,7 +40,11 @@ second-key =
 third-key = #third value
 ```
 
-### running goal
+### running goal for export props
 ```
 ru.izebit:consul-maven-plugin:export 
 ```
+
+[apache-license]: https://www.apache.org/licenses/
+[shield-license]: https://img.shields.io/github/license/khmarbaise/echo-maven-plugin.svg?label=License
+
