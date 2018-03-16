@@ -3,7 +3,7 @@
 
 
 # Overview
-Maven plugin for export properties to consul from files and directories 🎲
+Maven plugin for exporting properties from files and directories to [consul](https://www.consul.io/) server 🎲
 
 
 ## License
@@ -11,7 +11,9 @@ Maven plugin for export properties to consul from files and directories 🎲
 
 ## Usage
 
-### adding dependency to pom.xml
+There are only three steps
+
+### Add the plugin to your pom.xml:
 
 ```xml
 <plugin>
@@ -31,7 +33,7 @@ Maven plugin for export properties to consul from files and directories 🎲
     </configuration>
 </plugin>
 ```
-### the structure of file with properties
+### Create a file of properties with the next structure:
 
 ```properties
 first-key = first-value
@@ -40,7 +42,7 @@ second-key =
 third-key = #third value
 ```
 
-### running goal for export props
+### Run a goal to export properties from file:
 ```
 ru.izebit:consul-maven-plugin:export 
 ```
