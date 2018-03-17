@@ -16,16 +16,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author <a href="izebit@gmail.com">Artem Konovalov</a> <br/>
  * Date: 08/10/2017/.
  */
 
-@Mojo(name = "export",
-        defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+@Mojo(name = "run",
+        defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
         threadSafe = true)
-public class ExportMojo extends AbstractMojo {
+public class ExportConsulMojo extends AbstractMojo {
+    /**
+     * url for connecting to consul
+     */
     @Parameter(property = "connection", required = true)
     private Connection connection;
     /**
@@ -44,6 +48,7 @@ public class ExportMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException {
+        getLog().info("start export properties to consul");
         getLog().info("connect to consul with address: " + connection.getUrl());
 
         Consul.Builder builder = Consul
@@ -70,7 +75,8 @@ public class ExportMojo extends AbstractMojo {
                 handlers.forEach(handler -> {
                     try {
                         handler.handle();
-                        getLog().debug("handler: " + handler);
+                        if (getLog().isDebugEnabled())
+                            getLog().debug("handler: " + handler);
                     } catch (IOException e) {
                         getLog().error("something wrong happened while working handler: " + handler, e);
                     }
@@ -79,7 +85,6 @@ public class ExportMojo extends AbstractMojo {
                 getLog().error(e);
             }
         }
-
 
         consul.destroy();
         getLog().info("export properties to consul has been done");

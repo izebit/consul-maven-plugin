@@ -31,8 +31,6 @@ def consulServer = context.get('consul')
 
 try {
     check(consulServer)
-} catch (Exception e) {
-    throw e
 } finally {
     consulServer.close()
     println "consul has been destroyed"

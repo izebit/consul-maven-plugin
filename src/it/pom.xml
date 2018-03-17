@@ -6,30 +6,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.izebit</groupId>
-    <artifactId>consul-maven-plugin</artifactId>
+    <artifactId>demo-project</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>Consul maven plugin</name>
-    <url>http://www.izebit.ru</url>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>project for testing</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <!--infra-->
-        <dependency>
-            <groupId>com.orbitz.consul</groupId>
-            <artifactId>consul-client</artifactId>
-            <version>0.16.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
@@ -42,7 +26,7 @@
                         <id>integration-tests</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>export</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
                             <connection>

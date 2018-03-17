@@ -4,12 +4,12 @@
 
 
     <groupId>ru.izebit</groupId>
-    <artifactId>consul-maven-plugin</artifactId>
+    <artifactId>export-consul-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Consul Maven plugin</name>
-    <description>Plugin for export properties from files to consul key-value store</description>
+    <description>plugin for export properties from files to consul server</description>
     <inceptionYear>2017</inceptionYear>
 
     <contributors>
@@ -79,11 +79,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.4.8</version>
-        </dependency>
     </dependencies>
 
     <profiles>
@@ -92,39 +87,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.gmaven</groupId>
-                        <artifactId>gmaven-plugin</artifactId>
-                        <version>1.5</version>
-                        <configuration>
-                            <source>**/*.groovy</source>
-                            <debug>false</debug>
-                            <verbose>true</verbose>
-                            <stacktrace>true</stacktrace>
-                            <defaultScriptExtension>.groovy</defaultScriptExtension>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>testCompile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.codehaus.groovy</groupId>
-                                <artifactId>groovy</artifactId>
-                                <version>1.8.4</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.codehaus.gmaven.runtime</groupId>
-                                <artifactId>gmaven-runtime-1.8</artifactId>
-                                <version>1.4</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
+                        <version>3.0.1</version>
                         <dependencies>
                             <dependency>
                                 <groupId>org.codehaus.gmaven.runtime</groupId>
@@ -150,20 +115,15 @@
                               also http://jira.codehaus.org/browse/MINVOKER-147 -->
                             <parallelThreads>1</parallelThreads>
                             <filterProperties>
-                                <repository.proxy.url>${repository.proxy.url}</repository.proxy.url>
+                                <mrm.repository.url>${localRepositoryUrl}</mrm.repository.url>
                             </filterProperties>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>pre-integration-tests</id>
                                 <goals>
                                     <goal>install</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>integration-tests</id>
-                                <goals>
-                                    <goal>run</goal>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -171,9 +131,8 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>mrm-maven-plugin</artifactId>
-                        <version>1.0.0</version>
+                        <version>1.1.0</version>
                         <configuration>
-                            <propertyName>repository.proxy.url</propertyName>
                             <repositories>
                                 <mockRepo>
                                     <source>${project.build.directory}/local-repo</source>
@@ -205,7 +164,6 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <source>${project.build.java.version}</source>
                     <target>${project.build.java.version}</target>
-
                 </configuration>
             </plugin>
             <plugin>
@@ -222,9 +180,8 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.5</version>
                 <configuration>
-                    <goalPrefix>consul-maven-plugin</goalPrefix>
+                    <goalPrefix>export-consul</goalPrefix>
                     <skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
-                    <goalPrefix>${project.artifactId}</goalPrefix>
                 </configuration>
                 <executions>
                     <execution>
