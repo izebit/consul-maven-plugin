@@ -44,7 +44,7 @@ third-key = #third value
 
 ### Run a goal to export properties from file:
 ```
-ru.izebit:consul-maven-plugin:export 
+export-consul:run
 ```
 
 [apache-license]: https://www.apache.org/licenses/
